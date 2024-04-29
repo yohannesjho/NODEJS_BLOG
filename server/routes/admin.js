@@ -16,7 +16,39 @@ router.get('/admin', async (req,res) => {
     }
   })
 
+router.post('/admin', async (req,res)=>{
+  try {
+    const { username,password } = req.body;
+    if(req.body.username === 'admin' && req.body.password === 'password'){
+      res.send('You are logged in.')
+    }
+    else {
+      res.send('Wrong username or password');
+    }
+    console.log(req.body)
+    res.redirect('/admin')
+  } catch (error) {
+    console.log(error)
+  }
+})
 
+router.post('/register', async (req,res)=>{
+  try {
+    const { username,password } = req.body;
+    try {
+      const user = await user.create({username, password});
+      res.status(201).json({message: 'user created', user});
+    } catch (error) {
+      if(error.code === 11000){
+        res.status(409).json({message: 'user already in use'});
+      }
+      res.status(500).json({message: 'Internal server error'})
+      
+    }
+  } catch (error) {
+    console.log(error)
+  }
+})
 
 
 
